@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestor Finanzas personales</title>
+    <link href="./src/output.css" rel="stylesheet" />
+    <link rel="icon" href="icon-dolar.png" type="image/png" />
+  </head>
+
+  <body class="bg-green-100">
+    <header class="bg-black text-white py-6">
+      <h1 class="text-3xl font-bold text-center">
+        Gestor de Finanzas Personales
+      </h1>
+      <h2 class="p-2 text-center">
+        Alumnos: Palomeque Agustín Nicolás - Zavala Mónica Natalia
+      </h2>
+    </header>
+
+    <main class="container mx-auto p-6">
+      <!--balance global-->
+      <section class="mb-6">
+        <h2 class="text-3xl font-semibold mb-4 text-black">
+          📊 Balance Global
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-green-500 text-white p-5 rounded-lg shadow">
+            <h3 class="font-semibold">Ingresos Totales</h3>
+            <p id="totalIngresos" class="text-2xl mt-2">$0</p>
+          </div>
+
+          <div class="bg-red-500 text-white p-5 rounded-lg shadow">
+            <h3 class="font-semibold">Gastos Totales</h3>
+            <p id="totalGastos" class="text-2xl mt-2">$0</p>
+          </div>
+
+          <div class="bg-blue-500 text-white p-5 rounded-lg shadow">
+            <h3 class="font-semibold">Balance Neto</h3>
+            <p id="balanceNeto" class="text-2xl mt-2">$0</p>
+          </div>
+        </div>
+      </section>
+
+      <!--Registro de Movimiento-->
+
+      <section class="bg-green-100">
+        <h2 class="text-3xl font-semibold mb-4">Registrar Movimiento</h2>
+
+        <form id="formulario" class="space-y-4">
+          <div>
+            <label for="descripcion" class="block font-medium mb-2">
+              Descripción</label
+            >
+            <input
+              type="text"
+              id="descripcion"
+              name="descripcion"
+              placeholder="Ej: Compra supermercado"
+              class="w-full border rounded-lg p-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="monto" class="block font-medium mb-2"> Monto </label>
+            <input
+              type="number"
+              id="monto"
+              name="monto"
+              placeholder="Ingrese un monto"
+              class="w-full border rounded-lg p-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="fecha" class="block font-medium mb-2"> Fecha </label>
+            <input
+              type="date"
+              id="fecha"
+              name="fecha"
+              placeholder="Ingrese una fecha"
+              class="w-full border rounded-lg p-2"
+              required
+            /><br />
+          </div>
+
+          <div>
+            <label for="tipo" class="block font-medium mb-2"> Tipo </label>
+
+            <select
+              id="tipo"
+              name="tipo"
+              placeholder="Ingrese un tipo"
+              class="w-full border rounded-lg p-2"
+              required
+            >
+              <option value="ingreso">Ingreso</option>
+              <option value="gasto">Gasto</option>
+            </select>
+          </div>
+
+          <!--Categoria-->
+
+          <div>
+            <label for="categoria" class="block font-medium mb-2">
+              Categoría
+            </label>
+
+            <select
+              id="categoria"
+              class="w-full border rounded-lg p-2"
+              required
+            >
+              <option value="Sueldo">Sueldo</option>
+              <option value="Comida">Comida</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Salud">Salud</option>
+              <option value="Servicios">Servicios</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            class="bg-yellow-600 hover:bg-yellow-800 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+          >
+            Registro de Movimiento
+          </button>
+        </form>
+      </section>
+
+      <!--Historial de Movimiento-->
+
+      <section class="bg-white p-6 rounded-lg shadow mb-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
+          <h2 class="text-3xl font-semibold">Historial de Movimientos</h2>
+          
+          <button
+            id="btnVaciarTodo"
+            type="button"
+            title="Eliminar todo el historial"
+            aria-label="Eliminar todo el historial"
+            class="bg-white w-32 h-16 rounded-lg shadow-md hover:shadow-lg transition duration-300 flex items-center justify-center mt-2"
+          >
+            <img src="./icons8-delete-trash-48.png" alt="" class="w-7 h-7" />
+          </button>
+        </div>
+
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-2">Descripción</th>
+              <th class="p-2">Categoría</th>
+              <th class="p-2">Tipo</th>
+              <th class="p-2">Monto</th>
+              <th class="p-2">Acción</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabla"></tbody>
+        </table>
+      </section>
+
+      <!--categoria-->
+      <section class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-3xl font-semibold mb-4">Resumen por Categorías</h2>
+
+        <div id="resumenCategorias"></div>
+        <div id="graficoCategorias"></div>
+      </section>
+
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script type="module" src="./app.js"></script>
+    </main>
+  </body>
+</html>
