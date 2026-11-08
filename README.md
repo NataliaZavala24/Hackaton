@@ -1,5 +1,10 @@
+<img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/9a59b7ce-7f68-4d54-93c4-1ebf8d54700b" />
 # Gestor de Finanzas Personales
+## Autores
 
+- Palomeque Agustín Nicolás
+- Zavala Mónica Natalia
+  
 ## Descripción
 Aplicación web interactiva que permite gestionar las finanzas personales mediante el registro y visualización de ingresos y gastos.
 
@@ -36,7 +41,6 @@ Hackaton/
 ├── index.html
 ├── icon-dolar.png
 ├── icons8-delete-trash-48.png
-└── README.md
 ```
 
 ## Cómo ejecutar el proyecto
@@ -47,6 +51,3 @@ Hackaton/
 ## Almacenamiento de datos
 La aplicación utiliza `localStorage` para guardar las transacciones en el navegador, permitiendo que la información permanezca disponible al volver a ingresar desde el mismo navegador.
 
-## Autores
-- Palomeque Agustín Nicolás
-- Zavala Mónica Natalia
