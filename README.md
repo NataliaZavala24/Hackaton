@@ -1,6 +1,6 @@
-<img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/9a59b7ce-7f68-4d54-93c4-1ebf8d54700b" />
-# Gestor de Finanzas Personales
-## Autores
+
+## Gestor de Finanzas Personales <img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/9a59b7ce-7f68-4d54-93c4-1ebf8d54700b" /> 
+### Autores
 
 - Palomeque Agustín Nicolás
 - Zavala Mónica Natalia
