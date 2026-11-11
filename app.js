@@ -79,6 +79,8 @@ if (!descripcion.trim() || !Number.isFinite(monto) || monto <= 0) {
 
   crearGraficoCategorias();
 
+  crearGraficoEvolucion();
+
   formulario.reset();
 
 });
@@ -101,7 +103,9 @@ function renderizarTabla() {
 
             </td>
 
-            <td class="p-2 text-center">$${transaccion.monto}</td>
+            <td class="p-2 text-center">$${transaccion.monto.toLocaleString("es-AR")}</td>
+            
+            <td class="p-2 text-center">${transaccion.fecha}</td>
 
           <td class="p-2 text-center">
 
@@ -130,11 +134,15 @@ function actualizarBalance() {
 
   const balance = ingresos - gastos;
 
-  totalIngresos.textContent = `$${ingresos}`;
+    totalIngresos.textContent =
+    `$${ingresos.toLocaleString("es-AR")}`;
 
-  totalGastos.textContent = `$${gastos}`;
+    totalGastos.textContent =
+    `$${gastos.toLocaleString("es-AR")}`;
 
-  balanceNeto.textContent = `$${balance}`;
+    balanceNeto.textContent =
+    `$${balance.toLocaleString("es-AR")}`;
+
 }
 
 
@@ -151,6 +159,7 @@ function mostrarResumenCategorias() {
         }
 
         categorias[clave] += transaccion.monto;
+        
     });
 
     for (const clave in categorias) {
@@ -159,7 +168,7 @@ function mostrarResumenCategorias() {
         resumenCategorias.innerHTML += `
             <div class="p-2 border-b">
                 <strong>${categoria}</strong>
-                (${tipo}): $${categorias[clave]}
+                (${tipo}):$${categorias[clave].toLocaleString("es-AR")}
             </div>
         `;
     }
@@ -234,22 +243,26 @@ function crearGraficoCategorias() {
             show: false
         },
 
+        dataLabels: {
+         enabled: true,
+         formatter: function (val) {
+          return val.toLocaleString("es-AR");
+       }
+       },
+       yaxis: {
+        labels: {
+         formatter: function (value) {
+            return value.toLocaleString("es-AR");
+         }
+        }
+        },
+
         tooltip: {
             enabled: true,
 
             custom: function({ series, seriesIndex, dataPointIndex }) {
 
                 const movimientoActual = datos[dataPointIndex];
-
-                const movimientos = Transaccion.historial.filter(
-                    (t) =>
-                        t.categoria === movimientoActual.categoria &&
-                        t.tipo === movimientoActual.tipo
-                );
-
-                const listaFechas = movimientos.map((t) =>
-                    `<li>📅 ${t.fecha} ($${t.monto})</li>`
-                ).join("");
 
                 return `
                     <div class="p-3 bg-white shadow-lg rounded-lg border border-gray-200 text-sm">
@@ -260,16 +273,8 @@ function crearGraficoCategorias() {
 
                         <div class="text-gray-600 mb-1">
                             <strong>Total:</strong>
-                            $${series[seriesIndex][dataPointIndex]}
+                            $${series[seriesIndex][dataPointIndex].toLocaleString("es-AR")}
                         </div>
-
-                        <div class="text-xs text-gray-500 font-semibold mt-2 mb-1">
-                            Fechas de movimientos:
-                        </div>
-
-                        <ul class="text-xs text-gray-600 list-none space-y-1">
-                            ${listaFechas}
-                        </ul>
 
                     </div>
                 `;
@@ -284,6 +289,109 @@ function crearGraficoCategorias() {
         options
     );
     chart.render();
+
+}
+
+function crearGraficoEvolucion() {
+
+  const fechas = [...new Set(
+    Transaccion.historial.map(t => t.fecha)
+  )];
+
+  const ingresos = [];
+  const gastos = [];
+  const balances = [];
+
+  let balanceAcumulado = 0;
+
+  fechas.forEach(fecha => {
+
+    const ingresoDia = Transaccion.historial
+      .filter(
+        t => t.fecha === fecha &&
+             t.tipo === "ingreso"
+      )
+      .reduce((acc, t) => acc + t.monto, 0);
+
+    const gastoDia = Transaccion.historial
+      .filter(
+        t => t.fecha === fecha &&
+             t.tipo === "gasto"
+      )
+      .reduce((acc, t) => acc + t.monto, 0);
+
+    balanceAcumulado += ingresoDia - gastoDia;
+
+    ingresos.push(ingresoDia);
+    gastos.push(gastoDia);
+    balances.push(balanceAcumulado);
+
+  });
+
+  const options = {
+
+    chart: {
+      type: "line",
+      height: 350
+    },
+
+    series: [
+      {
+        name: "Ingresos",
+        data: ingresos
+      },
+      {
+        name: "Gastos",
+        data: gastos
+      },
+      {
+        name: "Balance Neto",
+        data: balances
+      }
+    ],
+
+    colors: [
+      "#22C55E",
+      "#EF4444",
+      "#3B82F6"
+    ],
+
+    stroke: {
+      width: 4
+    },
+
+    dataLabels: {
+    enabled: true,
+    formatter: function (val) {
+        return val.toLocaleString("es-AR");
+    }
+    },
+
+    yaxis: {
+    labels: {
+        formatter: function (value) {
+            return value.toLocaleString("es-AR");
+        }
+    }
+    },
+
+    xaxis: {
+      categories: fechas
+    },
+
+    markers: {
+      size: 5
+    }
+  };
+
+  document.querySelector("#graficoEvolucion").innerHTML = "";
+
+  const chart = new ApexCharts(
+    document.querySelector("#graficoEvolucion"),
+    options
+  );
+
+  chart.render();
 }
 
 window.eliminarTransaccion = function (id) {
@@ -309,6 +417,7 @@ window.eliminarTransaccion = function (id) {
       actualizarBalance();
       mostrarResumenCategorias();
       crearGraficoCategorias();
+      crearGraficoEvolucion();
 
       Swal.fire({
         title: "✅ Eliminado",
@@ -351,6 +460,7 @@ btnVaciarTodo.addEventListener("click", function () {
       actualizarBalance();
       mostrarResumenCategorias();
       crearGraficoCategorias();
+      crearGraficoEvolucion();
 
       Swal.fire({
         title: "🗑️ Historial vaciado",
@@ -368,3 +478,4 @@ renderizarTabla();
 actualizarBalance();
 mostrarResumenCategorias();
 crearGraficoCategorias();
+crearGraficoEvolucion();
